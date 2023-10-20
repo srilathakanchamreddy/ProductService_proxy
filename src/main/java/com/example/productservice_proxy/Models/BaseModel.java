@@ -12,4 +12,7 @@ public abstract class BaseModel {
     private Date last_updated_at;
     private boolean is_deleted;
 
+    public void setIsDeleted(boolean b) {
+        this.is_deleted = b;
+    }
 }

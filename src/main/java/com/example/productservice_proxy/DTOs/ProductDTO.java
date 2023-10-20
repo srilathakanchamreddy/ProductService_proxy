@@ -11,10 +11,10 @@ import lombok.ToString;
 public class ProductDTO {
     private String title;
     private String description;
-    private String image_url;
+    private String image;
     private double price;
-    private Categories category;
-
+    private String category;
+    private RatingDTO rating;
 
 
 }
