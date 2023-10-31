@@ -10,9 +10,11 @@ public interface IProductService {
 
     Product getSingleProduct(long id);
 
-    Product createProduct(ProductDTO productDTO);
 
-    Product updateProduct(ProductDTO productDTO, long id);
+
+    Product updateProduct(Product product, long id);
 
     Product deleteProduct(long id);
+
+    Product createProduct(Product product);
 }
