@@ -15,16 +15,17 @@ public class SelfProductService implements com.example.productservice_proxy.Serv
     }
     @Override
     public List<Product> getAllProducts() {
-        return null;
+        return productRepo.findAll();
     }
 
     @Override
     public Product getSingleProduct(long id) {
-        return null;
+        return productRepo.getProductById(id);
     }
 
     @Override
     public Product createProduct(Product product) {
+
         productRepo.save(product);
         return product;
     }

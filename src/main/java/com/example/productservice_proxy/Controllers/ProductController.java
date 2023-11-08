@@ -3,24 +3,36 @@ package com.example.productservice_proxy.Controllers;
 import com.example.productservice_proxy.DTOs.ProductDTO;
 import com.example.productservice_proxy.Models.Category;
 import com.example.productservice_proxy.Models.Product;
+import com.example.productservice_proxy.Services.ICategoryService;
 import com.example.productservice_proxy.Services.IProductService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @RestController
 @RequestMapping("/products")
 public class ProductController {
     private IProductService productService;
-    ProductController(IProductService productService){
+    private ICategoryService categoryService;
+    ProductController(IProductService productService, ICategoryService categoryService){
         this.productService =productService;
+        this.categoryService = categoryService;
     }
     @GetMapping("/")
-    public ResponseEntity<List<Product>> getAllProducts(){
-        return new ResponseEntity<List<Product>>(productService.getAllProducts(), HttpStatus.OK);
+    public ResponseEntity<List<ProductDTO>> getAllProducts(){
+        List<Product> products = productService.getAllProducts();
+        //write code to convert List<Product> to  List<ProductDTO>
+        List<ProductDTO> productDTOS = new ArrayList<>();
+        for (Product product: products) {
+            ProductDTO productDTO = getProductDTO(product);
+            productDTOS.add(productDTO);
+        }
+        return new ResponseEntity<List<ProductDTO>>(productDTOS, HttpStatus.OK);
+
     }
     @GetMapping("/{id}")
     public ResponseEntity<ProductDTO> getSingleProduct(@PathVariable("id") long id) {
@@ -28,15 +40,14 @@ public class ProductController {
             MultiValueMap<String, String> headers = new org.springframework.http.HttpHeaders();
             headers.add("Content-Type", "application/json");
             headers.add("Accept", "application/json");
-            if (id <= 0) {
-                return new ResponseEntity<ProductDTO>(new ProductDTO(), headers, HttpStatus.OK);
-            }
+
             Product product = productService.getSingleProduct(id);
             ProductDTO productDTO = getProductDTO(product);
 
             return new ResponseEntity<ProductDTO>(productDTO, headers, HttpStatus.OK);
         } catch (Exception e) {
-            return new ResponseEntity<ProductDTO>(new ProductDTO(), HttpStatus.INTERNAL_SERVER_ERROR);
+            //return new ResponseEntity<ProductDTO>(new ProductDTO(), HttpStatus.INTERNAL_SERVER_ERROR);
+            throw e;
         }
     }
     //Exception handling
@@ -71,8 +82,8 @@ public class ProductController {
         product.setImage_url(productDTO.getImage());
         product.setPrice(productDTO.getPrice());
         product.setId(productDTO.getId());
-        Category category = new Category();
-        category.setName(productDTO.getCategory());
+        Category category = categoryService.getCategoryByName(productDTO.getCategory());
+
         product.setCategory(category);
         return product;
     }

@@ -12,6 +12,6 @@ import java.util.List;
 public class Category extends BaseModel{
     private String name;
     private String description;
-    @OneToMany(mappedBy = "category" , cascade = {jakarta.persistence.CascadeType.ALL})
+    @OneToMany(mappedBy = "category" , cascade = {jakarta.persistence.CascadeType.ALL}, fetch = jakarta.persistence.FetchType.LAZY)
     List<Product> productList;
 }
