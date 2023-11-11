@@ -24,16 +24,18 @@ public class SelfProductService implements com.example.productservice_proxy.Serv
     }
 
     @Override
+    public Product updateProduct(Product product, long id) {
+        return null;
+    }
+
+    @Override
     public Product createProduct(Product product) {
 
         productRepo.save(product);
         return product;
     }
 
-    @Override
-    public Product updateProduct(Product product, long id) {
-        return null;
-    }
+
 
     @Override
     public Product deleteProduct(long id) {

@@ -1,6 +1,8 @@
 package com.example.productservice_proxy.Controllers;
 
 import com.example.productservice_proxy.DTOs.CategoryDTO;
+import com.example.productservice_proxy.DTOs.CategoryMapper;
+import com.example.productservice_proxy.DTOs.CategoryWithProductListDto;
 import com.example.productservice_proxy.DTOs.ProductDTO;
 import com.example.productservice_proxy.Models.Category;
 import com.example.productservice_proxy.Models.Product;
@@ -17,24 +19,27 @@ import java.util.List;
 public class CategoryController {
 
     private ICategoryService categoryService;
-    CategoryController(ICategoryService categoryService){
+    private CategoryMapper categoryMapper;
+    CategoryController(ICategoryService categoryService, CategoryMapper categoryMapper){
         this.categoryService = categoryService;
+        this.categoryMapper = categoryMapper;
     }
     @GetMapping("/")
-    public ResponseEntity<List<CategoryDTO>> getAllCategories() {
+    public ResponseEntity<List<CategoryWithProductListDto>> getAllCategories() {
         List<Category> categories = categoryService.getAllCategories();
-        List<CategoryDTO> categoryDTOS = new ArrayList<>();
+        List<CategoryWithProductListDto> categoryWithProductListDtos = new ArrayList<>();
         for (Category category: categories) {
-            CategoryDTO categoryDTO = getCategoryDTO(category);
-            categoryDTOS.add(categoryDTO);
+            CategoryWithProductListDto categoryWithProductListDto = categoryMapper.toDto(category);
+            categoryWithProductListDtos.add(categoryWithProductListDto);
         }
-        return new ResponseEntity<>(categoryDTOS, HttpStatus.OK);
+        return new ResponseEntity<>(categoryWithProductListDtos, HttpStatus.OK);
     }
     @GetMapping("/{id}")
-    public ResponseEntity<CategoryDTO> getSingleCategory(@PathVariable("id") long id) {
+    public ResponseEntity<CategoryWithProductListDto> getSingleCategory(@PathVariable("id") long id) {
 
         Category category =  categoryService.getSingleCategory(id);
-        return new ResponseEntity<>(getCategoryDTO(category), HttpStatus.OK);
+        CategoryWithProductListDto categoryWithProductListDto = categoryMapper.toDto(category);
+        return new ResponseEntity<>(categoryWithProductListDto, HttpStatus.OK);
     }
 
     private CategoryDTO getCategoryDTO(Category category) {
@@ -66,11 +71,12 @@ public class CategoryController {
 
     }
     @Transactional
-    @PostMapping("/")
-    public ResponseEntity<CategoryDTO> createCategory(@RequestBody CategoryDTO categoryDTO) {
-
-        Category category = categoryService.createCategory(getcategoryfromDTO(categoryDTO));
-        return new ResponseEntity<>(getCategoryDTO(category), HttpStatus.CREATED);
+    @PostMapping ("/")
+    public ResponseEntity<CategoryWithProductListDto> createCategory(@RequestBody CategoryWithProductListDto categoryWithProductListDto) {
+        Category category = categoryMapper.toEntity(categoryWithProductListDto);
+        Category categoryCreated  = categoryService.createCategory(category);
+        categoryWithProductListDto = categoryMapper.toDto(categoryCreated);
+        return new ResponseEntity<>(categoryWithProductListDto, HttpStatus.CREATED);
     }
 
     private Category getcategoryfromDTO(CategoryDTO categoryDTO) {
@@ -80,12 +86,16 @@ public class CategoryController {
         return category;
     }
 
-    @PatchMapping("/{id}")
-    public ResponseEntity<CategoryDTO> updateCategory(@RequestBody CategoryDTO categoryDTO,@PathVariable long id) {
-        return null;
+    @PutMapping("/{id}")
+    public ResponseEntity<CategoryWithProductListDto> updateCategory(@RequestBody CategoryWithProductListDto categoryWithProductListDto,@PathVariable long id) {
+        Category existingCategory = categoryService.getSingleCategory(id);
+        Category category = categoryMapper.partialUpdate(categoryWithProductListDto, existingCategory);
+        Category categoryResponse = categoryService.createCategory(category);
+        CategoryWithProductListDto categoryWithProductListDtoResponse = categoryMapper.toDto(categoryResponse);
+        return new ResponseEntity<>(categoryWithProductListDtoResponse, HttpStatus.CREATED);
     }
     @DeleteMapping("/{id}")
     public ResponseEntity<CategoryDTO> deleteCategory(@PathVariable long id) {
-        return null;
+        return new ResponseEntity<>(categoryService.deleteCategory(id), HttpStatus.OK);
     }
 }
