@@ -83,7 +83,9 @@ class ProductControllerMVCTest {
         when(productMapper.toDto(any())).thenReturn(productDto);
         mockMvc.perform(get("/products/1"))
                 .andExpect(status().isOk())
-                .andExpect(content().string(objectMapper.writeValueAsString(productDto)));
+                .andExpect(content().string(objectMapper.writeValueAsString(productDto)))
+                .andExpect(jsonPath("$.id", is(1)))
+                .andExpect(jsonPath("$.title", is("test")));
     }
     @Test
     @DisplayName("when get single product is called, then throw exception")

@@ -23,7 +23,8 @@ public class SelfProductService implements com.example.productservice_proxy.Serv
 
     @Override
     public Product getSingleProduct(long id) {
-        return productRepo.getProductById(id);
+        //return productRepo.getProductById(id);
+        return new Product();
     }
 
     @Override
