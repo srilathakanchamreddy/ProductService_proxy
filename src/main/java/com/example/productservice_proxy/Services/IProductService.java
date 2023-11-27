@@ -1,6 +1,5 @@
 package com.example.productservice_proxy.Services;
 
-import com.example.productservice_proxy.DTOs.ProductDTO;
 import com.example.productservice_proxy.Models.Product;
 
 import java.util.List;

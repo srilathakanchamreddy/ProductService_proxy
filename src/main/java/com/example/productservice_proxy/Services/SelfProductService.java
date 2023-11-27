@@ -1,17 +1,20 @@
 package com.example.productservice_proxy.Services;
 
-import com.example.productservice_proxy.Clients.FakeStore.DTO.FakeStoreProductDTO;
-import com.example.productservice_proxy.DTOs.ProductDTO;
+import com.example.productservice_proxy.Exceptions.CategoryNotPresentException;
+import com.example.productservice_proxy.Models.Category;
 import com.example.productservice_proxy.Models.Product;
 import com.example.productservice_proxy.Repositaries.ProductRepo;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 @Service
 public class SelfProductService implements com.example.productservice_proxy.Services.IProductService{
     ProductRepo productRepo;
-    SelfProductService(ProductRepo productRepo){
+    ICategoryService categoryService;
+    SelfProductService(ProductRepo productRepo, ICategoryService categoryService){
         this.productRepo = productRepo;
+        this.categoryService = categoryService;
     }
     @Override
     public List<Product> getAllProducts() {
@@ -25,12 +28,23 @@ public class SelfProductService implements com.example.productservice_proxy.Serv
 
     @Override
     public Product updateProduct(Product product, long id) {
-        return null;
+        return productRepo.save(product);
+
+
+
     }
 
     @Override
+    @Transactional
     public Product createProduct(Product product) {
-
+        //check if category exists
+       Category category = categoryService.getCategoryByName(product.getCategory().getName());
+       //if category does not exist, create it
+       if(category == null) {
+           category = categoryService.createCategory(product.getCategory());
+       }
+       //set category of product
+        product.setCategory(category);
         productRepo.save(product);
         return product;
     }
@@ -39,6 +53,6 @@ public class SelfProductService implements com.example.productservice_proxy.Serv
 
     @Override
     public Product deleteProduct(long id) {
-        return null;
+        return productRepo.deleteProductById(id);
     }
 }

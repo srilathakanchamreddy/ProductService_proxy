@@ -1,9 +1,7 @@
 package com.example.productservice_proxy.Services;
 
-import com.example.productservice_proxy.DTOs.CategoryDTO;
 import com.example.productservice_proxy.Models.Category;
 import com.example.productservice_proxy.Repositaries.CategoryRepo;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -37,7 +35,7 @@ public class SelfCategoryService implements com.example.productservice_proxy.Ser
     }
 
     @Override
-    public CategoryDTO deleteCategory(long id) {
+    public Category deleteCategory(long id) {
         return categoryRepo.deleteById(id);
     }
 

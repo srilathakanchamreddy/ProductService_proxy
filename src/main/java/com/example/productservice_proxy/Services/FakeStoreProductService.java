@@ -3,11 +3,10 @@ package com.example.productservice_proxy.Services;
 import com.example.productservice_proxy.Clients.FakeStore.Client.FakeStoreClient;
 import com.example.productservice_proxy.Clients.FakeStore.DTO.FakeStoreProductDTO;
 import com.example.productservice_proxy.Clients.IClientDTO;
-import com.example.productservice_proxy.DTOs.ProductDTO;
+import com.example.productservice_proxy.Models.Category;
 import com.example.productservice_proxy.Models.Product;
 import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.stereotype.Service;
-import org.springframework.web.client.RestTemplate;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -51,6 +50,9 @@ public class FakeStoreProductService implements IProductService {
         product.setDescription(productDTO.getDescription());
         product.setImage_url(productDTO.getImage());
         product.setPrice(productDTO.getPrice());
+        Category category = new Category();
+        category.setName(productDTO.getCategory());
+        product.setCategory(category);
         return product;
     }
 

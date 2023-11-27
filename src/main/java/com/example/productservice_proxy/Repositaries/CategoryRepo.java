@@ -1,6 +1,5 @@
 package com.example.productservice_proxy.Repositaries;
 
-import com.example.productservice_proxy.DTOs.CategoryDTO;
 import com.example.productservice_proxy.Models.Category;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
@@ -15,5 +14,5 @@ public interface CategoryRepo extends JpaRepository<Category, Long> {
     Category findByName(String name);
     Category findById(long id);
 
-    CategoryDTO deleteById(long id);
+    Category deleteById(long id);
 }

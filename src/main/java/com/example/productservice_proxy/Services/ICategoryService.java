@@ -1,6 +1,5 @@
 package com.example.productservice_proxy.Services;
 
-import com.example.productservice_proxy.DTOs.CategoryDTO;
 import com.example.productservice_proxy.Models.Category;
 
 import java.util.List;
@@ -15,5 +14,5 @@ public interface ICategoryService {
 
     Category createCategory(Category category);
 
-    CategoryDTO deleteCategory(long id);
+    Category deleteCategory(long id);
 }

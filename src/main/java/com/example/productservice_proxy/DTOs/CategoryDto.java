@@ -18,11 +18,9 @@ import java.util.List;
 @NoArgsConstructor
 @Accessors(chain = true)
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class CategoryWithProductListDto implements Serializable {
+public class CategoryDto implements Serializable {
     private long id;
-    private Date created_at;
-    private Date last_updated_at;
-    private boolean is_deleted;
+
     private String name;
     private String description;
     private List<ProductDto> productList;
